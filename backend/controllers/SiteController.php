@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use app\models\LeaveApplications;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -22,13 +23,14 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
+                // 'only' => ['approve-leave'],
                 'rules' => [
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'approve-leave'], // Add 'approve-leave' to the allowed actions
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -62,7 +64,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $appliedLeaves = LeaveApplications::find()->all();
+
+        return $this->render('index', [
+            'appliedLeaves' => $appliedLeaves,
+        ]);
     }
 
     /**
@@ -100,5 +106,15 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionApproveLeave($userId,$id)
+    {
+        $model = LeaveApplications::find()->where(['user_id' => $userId,'id' => $id])->one();
+        $model->user_id = $userId;
+        $model->status = 1;
+        $model->save(false);
+
+        return $this->redirect(['site/index']);
     }
 }

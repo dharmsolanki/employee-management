@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use app\models\LeaveApplications;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -79,9 +80,10 @@ class SiteController extends Controller
         return $this->redirect(['site/login']);
     }
 
-    public function actionDashboard(){
-        $model = new User();
-        return $this->render('dashboard',['model'=>$model]);
+    public function actionDashboard()
+    {
+        $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
+        return $this->render('dashboard', ['model' => $model]);
     }
 
     /**
@@ -261,5 +263,29 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionApplyLeave()
+    {
+        $model = new LeaveApplications();
+
+        if (Yii::$app->request->isPost && !empty(Yii::$app->request->post())) {
+            $model->user_id = Yii::$app->user->identity->id;
+            $model->leave_type = Yii::$app->request->post()['User']['leaveType'];
+            $model->start_date = Yii::$app->request->post()['User']['startDate'];
+            $model->end_date = Yii::$app->request->post()['User']['endDate'];
+            $model->reason = Yii::$app->request->post()['User']['reason'];
+            $model->status = 0;
+
+            if ($model->save(false)) {
+                // Set a success flash message
+                Yii::$app->session->setFlash('success', 'Leave application submitted successfully.');
+            } else {
+                // Set an error flash message
+                Yii::$app->session->setFlash('error', 'Failed to submit leave application.');
+            }
+        }
+
+        return $this->redirect(['site/dashboard']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use app\models\LeaveApplications;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +30,10 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    public $leaveType;
+    public $startDate;
+    public $endDate;
+    public $reason;
 
     /**
      * {@inheritdoc}
@@ -110,7 +115,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -209,5 +215,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function getAppliedLeaves()
+    {
+        $model = LeaveApplications::find()->where(['user_id' => Yii::$app->user->identity->id])->all();
+        return $model;
     }
 }

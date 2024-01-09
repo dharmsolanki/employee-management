@@ -1,53 +1,51 @@
 <?php
 
+use yii\helpers\Html;
+
+use function PHPSTORM_META\type;
+
 /** @var yii\web\View $this */
+/** @var array $appliedLeaves */
 
-$this->title = 'My Yii Application';
+$this->title = 'Admin Dashboard';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-index">
 
-    <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Congratulations!</h1>
+<div class="admin-dashboard">
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+    <h1><?= Html::encode($this->title) ?></h1>
 
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
+    <div class="applied-leaves">
+        <h2>Applied Leaves</h2>
 
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Leave Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <!-- Add more headers as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($appliedLeaves as $model): ?>
+                    <tr>
+                        <td><?= Html::encode($model['id']) ?></td>
+                        <td><?= Html::encode($model['user_id']) ?></td>
+                        <td><?= Html::encode($model['leave_type']) ?></td>
+                        <td><?= Html::encode($model['start_date']) ?></td>
+                        <td><?= Html::encode($model['end_date']) ?></td>
+                        <td><?= Html::encode($model['reason']) ?></td>
+                        <td><?= Html::encode($model['status'] == 0 ? 'Pending' : 'Approved') ?></td>
+                        <td><?= Html::a('Approve', ['site/approve-leave', 'userId' => $model['user_id'],'id' => $model['id']], ['class' => 'btn btn-success','type' => 'button']) ?></td>
+                        <!-- Add more cells as needed -->
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </div>
