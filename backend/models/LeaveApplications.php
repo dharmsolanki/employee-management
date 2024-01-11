@@ -52,7 +52,7 @@ class LeaveApplications extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'Employee ID',
+            'user_id' => 'User ID',
             'leave_type' => 'Leave Type',
             'start_date' => 'Start Date',
             'end_date' => 'End Date',

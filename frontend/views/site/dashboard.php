@@ -63,6 +63,7 @@ $this->title = 'Dashboard';
                         echo '<th>Start Date</th>';
                         echo '<th>End Date</th>';
                         echo '<th>Status</th>';
+                        echo '<th>Action</th>'; // Add a new column for actions
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
@@ -73,7 +74,16 @@ $this->title = 'Dashboard';
                             echo '<td>' . Html::encode($leave->reason) . '</td>';
                             echo '<td>' . Html::encode(date("d-m-Y", strtotime($leave->start_date))) . '</td>';
                             echo '<td>' . Html::encode(date("d-m-Y", strtotime($leave->end_date))) . '</td>';
-                            echo '<td>' . Html::encode($leave->status == 0 ? 'Pending' : 'Approved') . '</td>';
+                            echo '<td>' . Html::encode($leave->status == 0 ? 'Pending' : ($leave->status == 1 ? 'Approved' : 'Rejected')) . '</td>';
+
+                            // Add the "Edit" button with a link to the edit action
+                            if ($leave->status == 0) {
+
+                                echo '<td>' . Html::a('Edit', ['site/edit', 'id' => $leave->id, 'userId' => $leave->user_id]) . '</td>';
+                            }else {
+                                echo '<td>Access Denied</td>';
+                            }
+
                             echo '</tr>';
                         }
 
@@ -93,34 +103,7 @@ $this->title = 'Dashboard';
                 <div class="card-header">
                     <h5 class="card-title">Dashboard</h5>
                 </div>
-                <div class="card-body">
-                    <!-- Leave Application Form -->
-                    <h6 class="card-subtitle mb-3">Leave Application</h6>
 
-                    <?php $form = ActiveForm::begin([
-                        'action' => Url::to(['site/apply-leave']),
-                        'method' => 'post',
-                    ]); ?>
-
-                    <?= $form->field($model, 'leaveType')->dropDownList([
-                        'sick' => 'Sick Leave',
-                        'vacation' => 'Vacation Leave',
-                        'personal' => 'Personal Leave',
-                    ], ['prompt' => 'Select Leave Type']) ?>
-
-                    <?= $form->field($model, 'startDate')->input('date') ?>
-
-                    <?= $form->field($model, 'endDate')->input('date') ?>
-
-                    <?= $form->field($model, 'reason')->textarea(['rows' => 3]) ?>
-
-                    <div class="form-group">
-                        <?= Html::submitButton('Submit Leave Application', ['class' => 'btn btn-primary']) ?>
-                    </div>
-
-                    <?php ActiveForm::end(); ?>
-
-                </div>
             </div>
         </div>
     </div>

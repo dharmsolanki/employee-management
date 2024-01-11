@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use app\models\LeaveApplications;
 use common\models\LoginForm;
+use common\models\User;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -30,7 +31,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index', 'approve-leave'], // Add 'approve-leave' to the allowed actions
+                        'actions' => ['logout', 'index', 'approve-leave', 'reject-leave', 'pending-leaves', 'approved-leaves'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -64,10 +65,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $appliedLeaves = LeaveApplications::find()->all();
+        $pendingLeaves = LeaveApplications::find()->where(['status' => 0])->all();
+        $approvedLeaves = LeaveApplications::find()->where(['status' => 1])->all();
+        $rejectedLeaves = LeaveApplications::find()->where(['status' => 2])->all();
 
         return $this->render('index', [
-            'appliedLeaves' => $appliedLeaves,
+            'pendingLeaves' => $pendingLeaves,
+            'approvedLeaves' => $approvedLeaves,
+            'rejectedLeaves' => $rejectedLeaves
         ]);
     }
 
@@ -85,7 +90,8 @@ class SiteController extends Controller
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->request->post()['LoginForm']['username'] === 'admin' && $model->login()) {
+
             return $this->goBack();
         }
 
@@ -108,13 +114,41 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function actionApproveLeave($userId,$id)
+    public function actionApproveLeave($userId, $id)
     {
-        $model = LeaveApplications::find()->where(['user_id' => $userId,'id' => $id])->one();
+        $model = LeaveApplications::find()->where(['user_id' => $userId, 'id' => $id])->one();
         $model->user_id = $userId;
         $model->status = 1;
         $model->save(false);
 
-        return $this->redirect(['site/index']);
+        return $this->redirect(['site/pending-leaves']);
+    }
+
+    public function actionRejectLeave($userId, $id)
+    {
+        $model = LeaveApplications::find()->where(['user_id' => $userId, 'id' => $id])->one();
+        $model->user_id = $userId;
+        $model->status = 2;
+        $model->save(false);
+
+        return $this->redirect(['site/approved-leaves']);
+    }
+
+    public function actionPendingLeaves()
+    {
+        $pendingLeaves = LeaveApplications::find()->where(['status' => 0])->all();
+
+        return $this->render('pendingLeaves', [
+            'pendingLeaves' => $pendingLeaves,
+        ]);
+    }
+
+    public function actionApprovedLeaves()
+    {
+        $approvedLeaves = LeaveApplications::find()->where(['status' => 1])->all();
+
+        return $this->render('approvedLeaves', [
+            'approvedLeaves' => $approvedLeaves,
+        ]);
     }
 }

@@ -70,6 +70,16 @@ class SiteController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        if (!Yii::$app->user->isGuest) {
+            Yii::$app->session->timeout = Yii::$app->params['sessionTimeoutSeconds'];
+        }
+
+        return parent::beforeAction($action);
+    }
+
+
     /**
      * Displays homepage.
      *
@@ -98,7 +108,7 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->request->post()['LoginForm']['username'] !== 'admin' && $model->login()) {
             return $this->redirect(['site/dashboard']);
         }
 
@@ -287,5 +297,31 @@ class SiteController extends Controller
         }
 
         return $this->redirect(['site/dashboard']);
+    }
+
+    public function actionLeaveForm()
+    {
+        $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
+        return $this->render('leaveForm', ['model' => $model]);
+    }
+
+    // ...
+
+    public function actionEdit($id, $userId)
+    {
+        $model = LeaveApplications::findOne(['id' => $id, 'user_id' => $userId]);
+
+        if (!$model) {
+            throw new \yii\web\NotFoundHttpException('The requested record does not exist.');
+        }
+
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+            $model->save(false); // Use save(false) to skip validation for simplicity
+
+            Yii::$app->session->setFlash('success', 'Leave application updated successfully.');
+            return $this->redirect(['site/dashboard']);
+        }
+
+        return $this->render('editLeave', ['model' => $model]);
     }
 }

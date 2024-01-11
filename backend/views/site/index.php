@@ -1,51 +1,36 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\Url;
 
-use function PHPSTORM_META\type;
-
-/** @var yii\web\View $this */
-/** @var array $appliedLeaves */
-
-$this->title = 'Admin Dashboard';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
-
-<div class="admin-dashboard">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="applied-leaves">
-        <h2>Applied Leaves</h2>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>User ID</th>
-                    <th>Leave Type</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <!-- Add more headers as needed -->
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($appliedLeaves as $model): ?>
-                    <tr>
-                        <td><?= Html::encode($model['id']) ?></td>
-                        <td><?= Html::encode($model['user_id']) ?></td>
-                        <td><?= Html::encode($model['leave_type']) ?></td>
-                        <td><?= Html::encode($model['start_date']) ?></td>
-                        <td><?= Html::encode($model['end_date']) ?></td>
-                        <td><?= Html::encode($model['reason']) ?></td>
-                        <td><?= Html::encode($model['status'] == 0 ? 'Pending' : 'Approved') ?></td>
-                        <td><?= Html::a('Approve', ['site/approve-leave', 'userId' => $model['user_id'],'id' => $model['id']], ['class' => 'btn btn-success','type' => 'button']) ?></td>
-                        <!-- Add more cells as needed -->
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Leave Applications</h5>
+                    <h2><?= count($pendingLeaves) ?></h2>
+                    <a href="<?= Url::toRoute('site/pending-leaves') ?>" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Approved Leave Applications</h5>
+                    <h2><?= count($approvedLeaves) ?></h2>
+                    <a href="<?= Url::toRoute('site/approved-leaves') ?>" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Rejected Leave Applications</h5>
+                    <h2><?= count($rejectedLeaves) ?></h2>
+                    <a href="#" class="btn btn-primary" style="pointer-events: none">Learn More</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
