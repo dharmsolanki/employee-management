@@ -92,9 +92,15 @@ class SiteController extends Controller
 
     public function actionDashboard()
     {
+        // Check if the user is a guest before accessing identity
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['site/login']);
+        }
+
         $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
         return $this->render('dashboard', ['model' => $model]);
     }
+
 
     /**
      * Logs in a user.
@@ -128,7 +134,7 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return $this->redirect(['site/login']);
     }
 
     /**

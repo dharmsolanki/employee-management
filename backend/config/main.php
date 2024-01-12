@@ -18,16 +18,14 @@ return [
         ],
         'user' => [
             'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'authTimeout' => 60,
+            'enableAutoLogin' => false,
+            'authTimeout' => 1800,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true, 'expire' => time() + 60],
             'loginUrl' => ['site/login'],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
             'class' => 'yii\web\Session',
-            'timeout' => 60,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
