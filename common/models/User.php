@@ -34,6 +34,7 @@ class User extends ActiveRecord implements IdentityInterface
     public $startDate;
     public $endDate;
     public $reason;
+    public $imageFile;
 
     /**
      * {@inheritdoc}
@@ -61,6 +62,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -221,5 +223,20 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $model = LeaveApplications::find()->where(['user_id' => Yii::$app->user->identity->id])->all();
         return $model;
+    }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            $imageName = Yii::$app->security->generateRandomString(15) . '.' . $this->imageFile->extension;
+            $uploadPath = 'uploads/' . $imageName;
+
+            if ($this->imageFile->saveAs($uploadPath)) {
+                $this->image_path = $uploadPath; // Assuming you have an 'image_path' column in your database
+                return $this->save(false); // Save the image path to the database
+            }
+        }
+
+        return false;
     }
 }

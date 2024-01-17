@@ -40,11 +40,28 @@ $this->title = 'Dashboard';
                     <h5 class="card-title">User Profile</h5>
                 </div>
                 <div class="card-body">
-                    <!-- <img src="https://via.placeholder.com/150" alt="User Avatar" class="img-fluid mb-3"> -->
+                    <?php
+                    $imagePath = Yii::getAlias('@web/') . $model->image_path;
+                    echo Html::img($imagePath, [
+                        'alt' => 'User Avatar',
+                        'class' => 'img-fluid mb-3',
+                        'width' => 100, // Set your desired width here
+                        'height' => 100, // Set your desired height here
+                    ]);
+                    ?>
                     <p class="card-text"><?= $model->username ?></p>
                     <p class="card-text"><?= $model->email ?></p>
+                    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'], 'action' => Url::to(['site/upload'])]) ?>
+
+                    <?= $form->field($model, 'imageFile')->fileInput() ?>
+
+                    <button>Submit</button>
+
+                    <?php ActiveForm::end() ?>
                 </div>
+
             </div>
+
 
             <!-- Applied Leaves Box -->
             <div class="card mt-3">
@@ -80,7 +97,8 @@ $this->title = 'Dashboard';
                             if ($leave->status == 0) {
 
                                 echo '<td>' . Html::a('Edit', ['site/edit', 'id' => $leave->id, 'userId' => $leave->user_id]) . '</td>';
-                            }else {
+                                echo '<td>' . Html::a('Cancel', ['site/delete', 'id' => $leave->id, 'userId' => $leave->user_id]) . '</td>';
+                            } else {
                                 echo '<td>Access Denied</td>';
                             }
 

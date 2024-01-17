@@ -17,12 +17,15 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\UploadForm;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+
     /**
      * {@inheritdoc}
      */
@@ -329,5 +332,36 @@ class SiteController extends Controller
         }
 
         return $this->render('editLeave', ['model' => $model]);
+    }
+
+    public function actionDelete($id, $userId)
+    {
+        $customer = LeaveApplications::findOne(['id' => $id, 'user_id' => $userId]);
+        $customer->delete();
+        Yii::$app->session->setFlash('success', 'Leave application cancel successfully.');
+        return $this->redirect(['site/dashboard']);
+    }
+
+    public function actionUpload()
+    {
+        $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
+
+        if (Yii::$app->request->isPost) {
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if ($model->upload()) {
+                // File is uploaded successfully, you can redirect or render your desired view
+                Yii::$app->session->setFlash('success', 'Image Upload Successfully');
+                return $this->redirect(['site/dashboard']);
+            } else {
+
+                Yii::$app->session->setFlash('error', 'Image Not Uploaded');
+
+                return $this->redirect(['site/dashboard']);
+            }
+        }
+
+        // If there is an error or the upload fails, render the dashboard view with the model
+        return $this->render('dashboard', ['model' => $model]);
     }
 }
