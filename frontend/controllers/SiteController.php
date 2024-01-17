@@ -100,6 +100,7 @@ class SiteController extends Controller
             return $this->redirect(['site/login']);
         }
 
+        // Load the model with the existing image path
         $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
         return $this->render('dashboard', ['model' => $model]);
     }
@@ -354,9 +355,7 @@ class SiteController extends Controller
                 Yii::$app->session->setFlash('success', 'Image Upload Successfully');
                 return $this->redirect(['site/dashboard']);
             } else {
-
                 Yii::$app->session->setFlash('error', 'Image Not Uploaded');
-
                 return $this->redirect(['site/dashboard']);
             }
         }

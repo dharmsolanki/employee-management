@@ -228,15 +228,32 @@ class User extends ActiveRecord implements IdentityInterface
     public function upload()
     {
         if ($this->validate()) {
+            $oldImagePath = $this->image_path; // Save the old image path
             $imageName = Yii::$app->security->generateRandomString(15) . '.' . $this->imageFile->extension;
             $uploadPath = 'uploads/' . $imageName;
 
             if ($this->imageFile->saveAs($uploadPath)) {
-                $this->image_path = $uploadPath; // Assuming you have an 'image_path' column in your database
+                // Delete the old image file
+                $this->deleteOldImage($oldImagePath);
+
+                $this->image_path = $uploadPath; // Set the new image path
                 return $this->save(false); // Save the image path to the database
             }
         }
 
         return false;
+    }
+
+    private function deleteOldImage($oldImagePath)
+    {
+        if (!empty($oldImagePath)) {
+            $uploadsPath = Yii::getAlias('@webroot/uploads');
+            $oldImagePath = $uploadsPath . '/' . basename($oldImagePath);
+
+            // Check if the file exists before attempting to delete
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
     }
 }
