@@ -32,9 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($approvedLeaves as $model) : ?>
+                    <?php
+                    $i = 1;
+                    foreach ($approvedLeaves as $model) : ?>
                         <tr>
-                            <td><?= Html::encode($model['id']) ?></td>
+                            <td><?= Html::encode($i++) ?></td>
                             <td>
                                 <?php
                                 // Fetch the corresponding user model
@@ -59,5 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tbody>
             </table>
         </div>
+        <?php if (count($approvedLeaves) == 0) {
+            echo "<p>No Record Found.</p>";
+        } ?>
     </div>
 </div>
