@@ -131,7 +131,7 @@ class SiteController extends Controller
         $model->status = 2;
         $model->save(false);
 
-        return $this->redirect(['site/approved-leaves']);
+        return $this->redirect(['site/index']);
     }
 
     public function actionPendingLeaves()
