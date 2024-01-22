@@ -81,7 +81,7 @@ $this->title = 'Dashboard';
                         echo '</thead>';
                         echo '<tbody>';
 
-                        foreach ($appliedLeaves as $leave) {
+                        foreach (array_reverse($appliedLeaves) as $leave) {
                             echo '<tr>';
                             echo '<td>' . Html::encode($leave->leave_type) . '</td>';
                             echo '<td>' . Html::encode($leave->reason) . '</td>';
