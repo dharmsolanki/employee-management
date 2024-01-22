@@ -17,7 +17,7 @@ use Yii;
  * @property string|null $status
  * @property string|null $created_at
  * @property string|null $updated_at
- *
+ * @property string|null $reject_reason
  * @property User $user
  */
 class LeaveApplications extends \yii\db\ActiveRecord
@@ -36,14 +36,15 @@ class LeaveApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'leave_type', 'start_date', 'end_date', 'reason'], 'required'],
+            [['user_id', 'leave_type', 'start_date', 'end_date'], 'required'],
             [['user_id'], 'integer'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
-            [['reason'], 'string'],
+            [['reason', 'reject_reason'], 'string'],
             [['leave_type', 'status'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
+
 
     /**
      * {@inheritdoc}

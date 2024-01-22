@@ -53,10 +53,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= Html::encode($model['reason']) ?></td>
                             <td><?= Html::encode($model['status'] == 0 ? 'Pending' : ($model['status'] == 1 ? 'Approved' : 'Rejected')) ?></td>
                             <td>
-                                <?= Html::a('Approve', ['site/approve-leave', 'userId' => $model['user_id'], 'id' => $model['id']], ['class' => 'btn btn-success', 'type' => 'button']) ?>
-                                <?= Html::a('Reject', ['site/reject-leave', 'userId' => $model['user_id'], 'id' => $model['id']], ['class' => 'btn btn-danger', 'type' => 'button']) ?>
+                                <?= Html::a('Approve', 'javascript:void(0);', [
+                                    'class' => 'btn btn-success',
+                                    'type' => 'button',
+                                    'onclick' => 'approveLeave(' . $model['user_id'] . ', ' . $model['id'] . ');',
+                                ]) ?>
+
+                                <?= Html::a('Reject', 'javascript:void(0);', [
+                                    'class' => 'btn btn-danger',
+                                    'type' => 'button',
+                                    'onclick' => 'showRejectReasonModal(' . $model['id'] . ');',
+                                ]) ?>
                             </td>
-                            <!-- Add more cells as needed -->
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -67,3 +75,52 @@ $this->params['breadcrumbs'][] = $this->title;
         } ?>
     </div>
 </div>
+
+<!-- Modal for entering reject reason -->
+<?php foreach ($pendingLeaves as $model) : ?>
+    <div class="modal fade" id="rejectReasonModal<?= $model['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="rejectReasonModalLabel<?= $model['id'] ?>" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectReasonModalLabel<?= $model['id'] ?>">Enter Reject Reason</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="rejectReasonInput<?= $model['id'] ?>" name="rejectReason" placeholder="Enter reason" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRejectReason(<?= $model['user_id'] ?>, <?= $model['id'] ?>)">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+
+<script>
+    function approveLeave(userId, leaveId) {
+        // Construct the URL dynamically
+        var url = '/site/approve-leave?userId=' + userId + '&id=' + leaveId;
+        // Perform any additional logic as needed
+        window.location.href = url;
+    }
+
+    function showRejectReasonModal(leaveId) {
+        // Show the reject reason modal
+        $('#rejectReasonModal' + leaveId).modal('show');
+    }
+
+    function submitRejectReason(userId, leaveId) {
+        // Get the reject reason input value
+        var rejectReason = $('#rejectReasonInput' + leaveId).val();
+
+        // Construct the URL dynamically
+        var url = '/site/reject-leave?userId=' + userId + '&id=' + leaveId + '&reason=' + encodeURIComponent(rejectReason);
+
+        // Perform any additional logic as needed
+        window.location.href = url;
+    }
+    
+</script>

@@ -8,7 +8,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="applied-leaves">
-        <h2>Approved Leaves</h2>
+        <h2>Rejected Leaves</h2>
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                     <?php
                     $i = 1;
-                    foreach ($approvedLeaves as $model) : ?>
+                    foreach ($rejectedLeaves as $model) : ?>
                         <tr>
                             <td><?= Html::encode($i++) ?></td>
                             <td>
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= Html::encode($model['reason']) ?></td>
                             <td><?= Html::encode($model['status'] == 0 ? 'Pending' : ($model['status'] == 1 ? 'Approved' : 'Rejected')) ?></td>
                             <td>
-                                <button class="btn btn-danger reject-button" data-user-id="<?= $model['user_id'] ?>" data-leave-id="<?= $model['id'] ?>">Reject</button>
+                                <button class="btn btn-success approve-button" data-user-id="<?= $model['user_id'] ?>" data-leave-id="<?= $model['id'] ?>">Approve</button>
                             </td>
                             <!-- Add more cells as needed -->
                         </tr>
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tbody>
             </table>
         </div>
-        <?php if (count($approvedLeaves) == 0) {
+        <?php if (count($rejectedLeaves) == 0) {
             echo "<p>No Record Found.</p>";
         } ?>
     </div>
@@ -64,18 +64,18 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
     // JavaScript to handle the rejection
     document.addEventListener('DOMContentLoaded', function () {
-        var rejectButtons = document.querySelectorAll('.reject-button');
+        var rejectButtons = document.querySelectorAll('.approve-button');
 
         rejectButtons.forEach(function (button) {
             button.addEventListener('click', function () {
                 var userId = button.getAttribute('data-user-id');
                 var leaveId = button.getAttribute('data-leave-id');
-                var rejectUrl = '/site/reject-leave?userId=' + userId + '&id=' + leaveId;
+                var approveUrl = '/site/approve-rejected-leave?userId=' + userId + '&id=' + leaveId;
 
                 // Perform any additional logic as needed
 
                 // Redirect to the reject URL
-                window.location.href = rejectUrl;
+                window.location.href = approveUrl;
             });
         });
     });

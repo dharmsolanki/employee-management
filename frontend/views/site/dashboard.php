@@ -64,10 +64,11 @@ $this->title = 'Dashboard';
                 <div class="card-header bg-success text-white">
                     <h5 class="card-title mb-0">Applied Leaves</h5>
                 </div>
-                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                <div class="card-body">
                     <?php
                     $appliedLeaves = $model->getAppliedLeaves();
                     if (!empty($appliedLeaves)) {
+                        echo '<div class="table-responsive">';
                         echo '<table class="table table-bordered table-hover">';
                         echo '<thead class="thead-light">';
                         echo '<tr>';
@@ -76,7 +77,8 @@ $this->title = 'Dashboard';
                         echo '<th>Start Date</th>';
                         echo '<th>End Date</th>';
                         echo '<th>Status</th>';
-                        echo '<th>Action</th>'; // Add a new column for actions
+                        echo '<th>Reject Reason</th>'; // New column for Reject Reason
+                        echo '<th>Action</th>';
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
@@ -89,31 +91,41 @@ $this->title = 'Dashboard';
                             echo '<td>' . Html::encode(date("d-m-Y", strtotime($leave->end_date))) . '</td>';
                             echo '<td>' . Html::encode($leave->status == 0 ? 'Pending' : ($leave->status == 1 ? 'Approved' : 'Rejected')) . '</td>';
 
+                            // Display Reject Reason if status is 'Rejected'
+                            echo '<td>' . ($leave->status == 2 ? Html::encode($leave->reject_reason) : '-') . '</td>';
+
                             // Add the "Edit" and "Cancel" buttons within a single button
+                            echo '<td>';
+
+                            // Check if status is not 'Approved' or 'Rejected' before rendering buttons
                             if ($leave->status == 0) {
-                                echo '<td>';
+                                echo '<div class="btn-group" role="group">';
                                 echo Html::button('Edit/Cancel', ['class' => 'btn btn-warning btn-sm dropdown-toggle', 'data-toggle' => 'dropdown']);
                                 echo '<div class="dropdown-menu">';
                                 echo Html::a('Edit', ['site/edit', 'id' => $leave->id, 'userId' => $leave->user_id], ['class' => 'dropdown-item']);
                                 echo Html::a('Cancel', ['site/delete', 'id' => $leave->id, 'userId' => $leave->user_id], ['class' => 'dropdown-item']);
                                 echo '</div>';
-                                echo '</td>';
-                            } else {
-                                echo '<td>Access Denied</td>';
+                                echo '</div>';
+                            }else {
+                                echo "Access Denied";
                             }
 
+                            echo '</td>';
 
                             echo '</tr>';
                         }
 
                         echo '</tbody>';
                         echo '</table>';
+                        echo '</div>';
                     } else {
                         echo "<p>No applied leaves found.</p>";
                     }
                     ?>
                 </div>
             </div>
+
+
         </div>
 
         <div class="col-md-8">

@@ -28,7 +28,7 @@ use yii\helpers\Url;
                 <div class="card-body">
                     <h5 class="card-title text-danger">Rejected Leave Applications</h5>
                     <h2 class="text-danger"><?= count($rejectedLeaves) ?></h2>
-                    <button class="btn btn-outline-danger" disabled>View Details</button>
+                    <a href="<?= Url::toRoute('site/rejected-leaves') ?>" class="btn btn-outline-success">View Details</a>
                 </div>
             </div>
         </div>

@@ -31,7 +31,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index', 'approve-leave', 'reject-leave', 'pending-leaves', 'approved-leaves'],
+                        'actions' => ['logout', 'index', 'approve-leave', 'reject-leave', 'pending-leaves', 'approved-leaves', 'rejected-leaves'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -127,6 +127,14 @@ class SiteController extends Controller
     public function actionRejectLeave($userId, $id)
     {
         $model = LeaveApplications::find()->where(['user_id' => $userId, 'id' => $id])->one();
+
+        if (Yii::$app->request->isGet) {
+            // Handle the reject reason submission
+            $rejectReason = Yii::$app->request->get('reason');
+            // Save the reject reason to the database (you may want to add validation and error handling)
+            $model->reject_reason = $rejectReason;
+        }
+
         $model->user_id = $userId;
         $model->status = 2;
         $model->save(false);
@@ -149,6 +157,15 @@ class SiteController extends Controller
 
         return $this->render('approvedLeaves', [
             'approvedLeaves' => $approvedLeaves,
+        ]);
+    }
+
+    public function actionRejectedLeaves()
+    {
+        $rejectedLeaves = LeaveApplications::find()->where(['status' => 2])->all();
+
+        return $this->render('rejectedLeaves', [
+            'rejectedLeaves' => $rejectedLeaves,
         ]);
     }
 }

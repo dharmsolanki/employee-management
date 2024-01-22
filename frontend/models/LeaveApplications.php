@@ -22,6 +22,8 @@ use Yii;
  */
 class LeaveApplications extends \yii\db\ActiveRecord
 {
+    public $rejectReason;
+    
     /**
      * {@inheritdoc}
      */
