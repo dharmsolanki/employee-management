@@ -106,7 +106,7 @@ $this->title = 'Dashboard';
                                 echo Html::a('Cancel', ['site/delete', 'id' => $leave->id, 'userId' => $leave->user_id], ['class' => 'dropdown-item']);
                                 echo '</div>';
                                 echo '</div>';
-                            }else {
+                            } else {
                                 echo "Access Denied";
                             }
 
@@ -132,12 +132,43 @@ $this->title = 'Dashboard';
             <!-- Dashboard Content -->
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="card-title mb-0">Dashboard Content</h5>
+                    <h5 class="card-title mb-0">Task List</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Your dashboard content goes here -->
+                    <?php
+                    
+                    if (!empty($tasks)) {
+                        echo '<div class="table-responsive">';
+                        echo '<table class="table table-bordered table-hover">';
+                        echo '<thead class="thead-light">';
+                        echo '<tr>';
+                        echo '<th>Task Name</th>';
+                        echo '<th>Priority</th>';
+                        echo '<th>Due Date</th>';
+                        echo '<th>Description</th>';
+                        echo '</tr>';
+                        echo '</thead>';
+                        echo '<tbody>';
+
+                        foreach ($tasks as $task) {
+                            echo '<tr>';
+                            echo '<td>' . Html::encode($task->task_name) . '</td>';
+                            echo '<td>' . Html::encode($task->getPriorityLabel()) . '</td>'; // Assuming getPriorityLabel method is defined
+                            echo '<td>' . Html::encode(date("d-m-Y", strtotime($task->due_date))) . '</td>';
+                            echo '<td>' . Html::encode($task->description) . '</td>';
+                            echo '</tr>';
+                        }
+
+                        echo '</tbody>';
+                        echo '</table>';
+                        echo '</div>';
+                    } else {
+                        echo "<p>No tasks found for this employee.</p>";
+                    }
+                    ?>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

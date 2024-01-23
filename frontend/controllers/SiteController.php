@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use app\models\LeaveApplications;
+use backend\modules\api\models\AssignTasks;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -102,7 +103,11 @@ class SiteController extends Controller
 
         // Load the model with the existing image path
         $model = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
-        return $this->render('dashboard', ['model' => $model]);
+        $tasks = AssignTasks::find()->where(['employee_id' => Yii::$app->user->identity->id])->all();
+        return $this->render('dashboard', [
+            'model' => $model,
+            'tasks' => $tasks
+        ]);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace backend\modules\api\models;
 
+use app\models\LeaveApplications;
 use Yii;
 
 /**
@@ -82,5 +83,10 @@ class User extends \yii\db\ActiveRecord
     public function getLeaveApplications()
     {
         return $this->hasMany(LeaveApplications::class, ['user_id' => 'id']);
+    }
+
+    public function getTasks()
+    {
+        echo '<pre>'; print_r('hii');exit();
     }
 }

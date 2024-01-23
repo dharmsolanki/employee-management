@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use app\models\LeaveApplications;
+use backend\modules\api\models\AssignTasks;
 use common\models\LoginForm;
 use common\models\User;
 use Yii;
@@ -31,7 +32,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index', 'approve-leave', 'reject-leave', 'pending-leaves', 'approved-leaves', 'rejected-leaves'],
+                        'actions' => ['logout', 'index', 'approve-leave', 'reject-leave', 'pending-leaves', 'approved-leaves', 'rejected-leaves', 'assign-task', 'assign-tasks-list'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -68,11 +69,15 @@ class SiteController extends Controller
         $pendingLeaves = LeaveApplications::find()->where(['status' => 0])->all();
         $approvedLeaves = LeaveApplications::find()->where(['status' => 1])->all();
         $rejectedLeaves = LeaveApplications::find()->where(['status' => 2])->all();
+        $user = User::find()->all();
+        $tasks = AssignTasks::find()->all();
 
         return $this->render('index', [
             'pendingLeaves' => $pendingLeaves,
             'approvedLeaves' => $approvedLeaves,
-            'rejectedLeaves' => $rejectedLeaves
+            'rejectedLeaves' => $rejectedLeaves,
+            'user' => $user,
+            'tasks' => $tasks
         ]);
     }
 
@@ -166,6 +171,34 @@ class SiteController extends Controller
 
         return $this->render('rejectedLeaves', [
             'rejectedLeaves' => $rejectedLeaves,
+        ]);
+    }
+
+    public function actionAssignTask()
+    {
+        $model = new AssignTasks();
+        if (Yii::$app->request->isPost) {
+            $model->employee_id = Yii::$app->request->post('employee_id');
+            $model->task_name = Yii::$app->request->post('task_name');
+            $model->due_date = Yii::$app->request->post('due_date');
+            $model->priority = Yii::$app->request->post('priority');
+            $model->description = Yii::$app->request->post('description');
+            $model->save(false);
+        }
+        return $this->redirect(['site/index']);
+    }
+
+    public function actionAssignTasksList()
+    {
+        $dataProvider = new \yii\data\ArrayDataProvider([
+            'allModels' => AssignTasks::find()->all(),
+            'pagination' => [
+                'pageSize' => 10, // Set the number of items per page
+            ],
+        ]);
+
+        return $this->render('assignTasksList', [
+            'dataProvider' => $dataProvider,
         ]);
     }
 }
