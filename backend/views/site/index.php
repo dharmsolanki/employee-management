@@ -33,7 +33,15 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-2">
+    </div>
+    <div class="btn-assign-task mt-4">
+        <button class="btn btn-outline-success" id="btnAssignTask">Assign New Task</button>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
             <div class="card border-warning">
                 <div class="card-body">
                     <h5 class="card-title text-warning">Tasks</h5>
@@ -42,9 +50,6 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-    </div>
-    <div class="btn-assign-task mt-4">
-        <button class="btn btn-outline-success" id="btnAssignTask">Assign New Task</button>
     </div>
 </div>
 
