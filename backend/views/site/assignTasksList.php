@@ -34,29 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'description:ntext',
-            // Add more columns as needed
-
-            // Action column for view, update, and delete buttons
             [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete}',
-                'buttons' => [
-                    'view' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', ['view', 'id' => $model->id]);
-                    },
-                    'update' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['update', 'id' => $model->id]);
-                    },
-                    'delete' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
-                            'data' => [
-                                'confirm' => 'Are you sure you want to delete this item?',
-                                'method' => 'post',
-                            ],
-                        ]);
-                    },
-                ],
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    return $model->getStatusLabel();
+                },
             ],
+
         ],
     ]); ?>
 

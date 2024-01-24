@@ -188,13 +188,14 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            // echo '<pre>'; print_r('hii');exit();
             Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+            return $this->redirect(['site/signup']);
+        } else {
+            return $this->render('signup', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -367,5 +368,21 @@ class SiteController extends Controller
 
         // If there is an error or the upload fails, render the dashboard view with the model
         return $this->render('dashboard', ['model' => $model]);
+    }
+
+    public function actionUpdateStatus()
+    {
+        $statusValue = Yii::$app->request->post('statusValue');
+        $id = Yii::$app->request->post('id');
+
+        $model = AssignTasks::findOne($id); // Replace $id with the actual model ID
+        if ($model) {
+            $model->status = $statusValue;
+            $model->save(false);
+        }
+
+        // Return a response if necessary
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return ['success' => true];
     }
 }

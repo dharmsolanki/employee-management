@@ -136,7 +136,6 @@ $this->title = 'Dashboard';
                 </div>
                 <div class="card-body">
                     <?php
-                    
                     if (!empty($tasks)) {
                         echo '<div class="table-responsive">';
                         echo '<table class="table table-bordered table-hover">';
@@ -146,6 +145,7 @@ $this->title = 'Dashboard';
                         echo '<th>Priority</th>';
                         echo '<th>Due Date</th>';
                         echo '<th>Description</th>';
+                        echo '<th>Status</th>';
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
@@ -153,9 +153,23 @@ $this->title = 'Dashboard';
                         foreach ($tasks as $task) {
                             echo '<tr>';
                             echo '<td>' . Html::encode($task->task_name) . '</td>';
-                            echo '<td>' . Html::encode($task->getPriorityLabel()) . '</td>'; // Assuming getPriorityLabel method is defined
+                            echo '<td>' . Html::encode($task->getPriorityLabel()) . '</td>';
                             echo '<td>' . Html::encode(date("d-m-Y", strtotime($task->due_date))) . '</td>';
                             echo '<td>' . Html::encode($task->description) . '</td>';
+                            echo '<td>';
+
+                            // Dropdown for Status
+                            echo Html::dropDownList(
+                                'status',
+                                $task->status,
+                                [
+                                    0 => 'Pending',
+                                    1 => 'Completed',
+                                ],
+                                ['class' => 'form-control dropdown-status', 'data-task-id' => $task->id, 'prompt' => 'Select Status']
+                            );
+
+                            echo '</td>';
                             echo '</tr>';
                         }
 
@@ -168,7 +182,6 @@ $this->title = 'Dashboard';
                     ?>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

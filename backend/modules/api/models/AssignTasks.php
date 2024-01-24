@@ -11,7 +11,8 @@ use Yii;
  * @property int $employee_id
  * @property string $task_name
  * @property string $due_date
- * @property string $priority
+ * @property int $priority
+ * @property int|null $status // New status property
  * @property string|null $description
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -20,10 +21,12 @@ use Yii;
  */
 class AssignTasks extends \yii\db\ActiveRecord
 {
-
     const PRIORITY_LOW = 0;
     const PRIORITY_MEDIUM = 1;
     const PRIORITY_HIGH = 2;
+
+    const STATUS_PENDING = 0;
+    const STATUS_COMPLETED = 1;
 
     /**
      * {@inheritdoc}
@@ -39,8 +42,8 @@ class AssignTasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['employee_id', 'task_name', 'due_date', 'priority'], 'required'],
-            [['employee_id'], 'integer'],
+            [['employee_id', 'task_name', 'due_date', 'priority', 'status'], 'required'],
+            [['employee_id', 'priority', 'status'], 'integer'],
             [['due_date', 'created_at', 'updated_at'], 'safe'],
             [['description'], 'string'],
             [['task_name', 'priority'], 'string', 'max' => 255],
@@ -59,6 +62,7 @@ class AssignTasks extends \yii\db\ActiveRecord
             'task_name' => 'Task Name',
             'due_date' => 'Due Date',
             'priority' => 'Priority',
+            'status' => 'Status', // New status label
             'description' => 'Description',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -84,5 +88,15 @@ class AssignTasks extends \yii\db\ActiveRecord
         ];
 
         return $labels[$this->priority] ?? null;
+    }
+
+    public function getStatusLabel()
+    {
+        $labels = [
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_COMPLETED => 'Completed',
+        ];
+
+        return $labels[$this->status] ?? null;
     }
 }
