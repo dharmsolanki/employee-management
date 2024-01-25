@@ -124,6 +124,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && Yii::$app->request->post()['LoginForm']['username'] !== 'admin' && $model->login()) {
+            Yii::$app->session->setFlash('success', 'Login Successfully');
             return $this->redirect(['site/dashboard']);
         }
 

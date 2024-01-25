@@ -11,6 +11,25 @@ $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php if (Yii::$app->session->hasFlash('success')) : ?>
+    <div class="alert alert-success" role="alert">
+        <?= Yii::$app->session->getFlash('success') ?>
+    </div>
+<?php endif; ?>
+
+<?php if (Yii::$app->session->hasFlash('error')) : ?>
+    <div class="alert alert-danger" role="alert">
+        <?= Yii::$app->session->getFlash('error') ?>
+    </div>
+<?php endif; ?>
+<?php
+// JavaScript/jQuery code to automatically hide flash messages after 10 seconds
+$this->registerJs("
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 10000); // 10 seconds
+    ");
+?>
 <div class="site-signup">
     <div class="row justify-content-center">
         <div class="col-lg-6">
@@ -27,6 +46,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->field($model, 'email')->label('Email') ?>
 
                     <?= $form->field($model, 'password')->passwordInput()->label('Password') ?>
+                    <div class="form-group">
+                        <label>
+                            <?= $form->field($model, 'showPassword')->checkbox(['id' => 'showPasswordCheckboxId']) ?>
+                        </label>
+                    </div>
 
                     <div class="form-group">
                         <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

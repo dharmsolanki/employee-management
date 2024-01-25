@@ -17,3 +17,25 @@ $(document).ready(function () {
     });
   });
 });
+
+// showPassword.js
+
+document.addEventListener("DOMContentLoaded", function () {
+  let showPasswordCheckbox = document.getElementById("showPasswordCheckboxId");
+
+  function togglePasswordFields() {
+    let passwordFieldIds = ["signupform-password", "loginform-password"];
+
+    passwordFieldIds.forEach(function (fieldId) {
+      let passwordField = document.getElementById(fieldId);
+      if (passwordField) {
+        passwordField.type = showPasswordCheckbox.checked ? "text" : "password";
+      }
+    });
+  }
+
+  showPasswordCheckbox.addEventListener("change", togglePasswordFields);
+
+  // Trigger the initial state
+  togglePasswordFields();
+});
