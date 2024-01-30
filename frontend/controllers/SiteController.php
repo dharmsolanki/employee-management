@@ -380,10 +380,14 @@ class SiteController extends Controller
         if ($model) {
             $model->status = $statusValue;
             $model->save(false);
-        }
 
-        // Return a response if necessary
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return ['success' => true];
+            // Return a success response
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => true];
+        } else {
+            // Return an error response as the model is not found
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => false, 'error' => 'Task not found.'];
+        }
     }
 }

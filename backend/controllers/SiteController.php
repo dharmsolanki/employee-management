@@ -201,4 +201,9 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    public function actionAutoDeleteTasks($status)
+    {
+        echo '<pre>'; print_r('hii');exit();
+    }
 }

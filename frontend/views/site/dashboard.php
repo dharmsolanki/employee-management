@@ -51,7 +51,9 @@ $this->title = 'Dashboard';
                     <p class="card-text"><?= $model->email ?></p>
                     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'], 'action' => Url::to(['site/upload'])]) ?>
 
-                    <?= $form->field($model, 'imageFile')->fileInput(['class' => 'form-control-file']) ?>
+                    <div class="mb-3">
+                        <?= $form->field($model, 'imageFile')->fileInput(['class' => 'form-control'])->label('<label class="form-label">Custom Label</label>') ?>
+                    </div>
 
                     <?= Html::submitButton('Submit', ['class' => 'btn btn-primary mt-3']) ?>
 
@@ -166,7 +168,7 @@ $this->title = 'Dashboard';
                                     0 => 'Pending',
                                     1 => 'Completed',
                                 ],
-                                ['class' => 'form-control dropdown-status', 'data-task-id' => $task->id, 'prompt' => 'Select Status']
+                                ['class' => 'form-control dropdown-status', 'data-task-id' => $task->id]
                             );
 
                             echo '</td>';

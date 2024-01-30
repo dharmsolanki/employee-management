@@ -23,6 +23,11 @@ $this->params['body-class'] = 'bg-gradient-primary'; // Add a body class for bac
                 <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'class' => 'form-control']) ?>
 
                 <?= $form->field($model, 'password')->passwordInput(['class' => 'form-control']) ?>
+                <div class="form-group">
+                    <label>
+                        <?= $form->field($model, 'showPassword')->checkbox(['id' => 'showPasswordCheckboxId']) ?>
+                    </label>
+                </div>
 
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
