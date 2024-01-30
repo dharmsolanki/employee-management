@@ -18,7 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'columns' => [
             // Add columns based on your Task model attributes
-            'id',
+            [
+                'attribute' => 'id',
+                'value' => function ($model, $key, $index, $column) {
+                    // $index is 0-based, so add 1 to start from 1
+                    return $index + 1;
+                },
+            ],
             'task_name',
             [
                 'attribute' => 'employee_name',
