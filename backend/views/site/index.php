@@ -60,7 +60,7 @@ use yii\helpers\Url;
                 <div class="card-body">
                     <h5 class="card-title">Create Task for Employee</h5>
 
-                    <form action="<?= Url::toRoute('site/assign-task') ?>" method="POST">
+                    <form action="<?= Url::toRoute('site/assign-task') ?>" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
                         <div class="form-group">
                             <label for="employeeName">Select Employee</label>
@@ -98,6 +98,11 @@ use yii\helpers\Url;
                         <div class="form-group">
                             <label for="taskDescription">Task Description</label>
                             <textarea class="form-control" id="taskDescription" name="description" rows="3" placeholder="Enter task description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pdfFile">Upload PDF File</label>
+                            <input type="file" class="form-control" id="pdfFile" name="pdf_file">
                         </div>
 
                         <div class="form-group">

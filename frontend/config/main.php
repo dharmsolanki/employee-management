@@ -43,7 +43,9 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [],
+            'rules' => [
+                'download-pdf/<id:\d+>' => 'site/download-pdf',
+            ],
         ],
 
     ],

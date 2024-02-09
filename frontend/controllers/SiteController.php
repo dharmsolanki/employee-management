@@ -19,6 +19,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\UploadForm;
+use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
 /**
@@ -389,5 +390,21 @@ class SiteController extends Controller
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return ['success' => false, 'error' => 'Task not found.'];
         }
+    }
+
+    public function actionDownloadPdf($id)
+    {
+        $model = AssignTasks::findOne($id);
+        
+        if ($model && $model->attachment) {
+            $filePath = Yii::getAlias('@backend/web') . '/' . $model->attachment;
+
+            if (file_exists($filePath)) {
+                Yii::$app->response->sendFile($filePath, $model->attachment, ['inline' => false])->send();
+                return;
+            }
+        }
+
+        throw new NotFoundHttpException('The requested PDF file does not exist.');
     }
 }

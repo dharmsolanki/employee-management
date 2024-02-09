@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -183,7 +184,24 @@ class SiteController extends Controller
             $model->due_date = Yii::$app->request->post('due_date');
             $model->priority = Yii::$app->request->post('priority');
             $model->description = Yii::$app->request->post('description');
-            $model->save(false);
+            $uploadedFile = UploadedFile::getInstanceByName('pdf_file');
+
+            if ($uploadedFile !== null) {
+                $filePath = 'uploads/' . uniqid() . '.' . $uploadedFile->extension;
+
+                if ($uploadedFile->saveAs($filePath)) {
+                    // Save the file path to your model
+                    $model->attachment = $filePath;
+                } else {
+                    Yii::$app->session->setFlash('error', 'Failed to upload PDF file.');
+                    return $this->redirect(['site/index']);
+                }
+            }
+            if ($model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Task assigned successfully.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Failed to assign task.');
+            }
         }
         return $this->redirect(['site/index']);
     }
@@ -204,6 +222,8 @@ class SiteController extends Controller
 
     public function actionAutoDeleteTasks($status)
     {
-        echo '<pre>'; print_r('hii');exit();
+        echo '<pre>';
+        print_r('hii');
+        exit();
     }
 }

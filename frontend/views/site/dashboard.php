@@ -148,6 +148,7 @@ $this->title = 'Dashboard';
                         echo '<th>Due Date</th>';
                         echo '<th>Description</th>';
                         echo '<th>Status</th>';
+                        echo '<th>Attachment</th>'; // New column for attachment
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
@@ -171,6 +172,15 @@ $this->title = 'Dashboard';
                                 ['class' => 'form-control dropdown-status', 'data-task-id' => $task->id]
                             );
 
+                            echo '</td>';
+
+                            // Column for downloading attachments
+                            echo '<td>';
+                            if ($task->attachment) {
+                                echo Html::a('Download', ['site/download-pdf', 'id' => $task->id], ['class' => 'btn btn-primary btn-sm']);
+                            } else {
+                                echo 'No Attachment';
+                            }
                             echo '</td>';
                             echo '</tr>';
                         }
